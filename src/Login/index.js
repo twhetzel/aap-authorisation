@@ -9,8 +9,15 @@ const AAP_URL = process.env.REACT_APP_AAPURL;
 class Login extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isAuthenticated: null
+        }
 
         this.ElixirAuthService = new ElixirAuthService();
+
+        /**
+         * CHECK IF THIS SHOULD BE IN CONSTRUCTOR
+         */
         // Check if token exists in local storage, 
         // otherwise set to ''
         this.token = this.ElixirAuthService.getToken();
@@ -21,6 +28,7 @@ class Login extends Component {
             console.log("** Need to refresh token")
         } else {
             console.log("** Token is still valid")
+            // TODO Display logged in page if token is still valid
         }
 
 
@@ -38,12 +46,12 @@ class Login extends Component {
         // Example: https://gitlab.ebi.ac.uk/tools-glue/ng-ebi-authorization/blob/master/src/auth/auth.service.ts
         console.log("** Elixir Button clicked!")
         this.ElixirAuthService.login();
-
-        // this.ElixirAuthService.getToken();
     }
 
     componentDidMount() {
         window.addEventListener('message', (event) => {
+            event.preventDefault();
+
             console.log("** Elixir Window sent event data.");
             console.log("** Event: ", event)
             console.log("** Token: ", event.data);
@@ -56,16 +64,26 @@ class Login extends Component {
             const token = event.data;
             this.ElixirAuthService.setToken(token);
 
+            // TEST
+            this.setState({ isAuthenticated: true })
+            console.log("** isAuthenticated State: ", this.state.isAuthenticated);
+
+            // Close window after token is received
+            if (event.source) {
+                (window.event.source).close();
+            }
+
             var decoded = jwt_decode(token);
             console.log("** Decoded Token: ", decoded);
 
             // Update user profile
             // this.updateUser();
-
-            // Set state... not sure if needed
-            // this.ElixirAuthService.setState({ isLoggedIn: true });
-            // console.log("** ElixirAuth Login State: ", this.state.isAuthenticated);
         });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('message', this.handleLogin);
+        console.log("** Removed \"handleLogin\" Event listener")
     }
 
     /**

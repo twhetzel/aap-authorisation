@@ -16,7 +16,6 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 
 import ElixirAuthService from '../ElixirAuthService';
-const eas = new ElixirAuthService();
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,8 +32,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function MenuAppBar() {
     const classes = useStyles();
-    const [auth, setAuth] = React.useState(true);
-    console.log("** Login State: ", auth);
+    // const [auth, setAuth] = React.useState(true);
+    const [auth, setAuth] = React.useState(false);
+    console.log("** Login Toggle State: ", auth);
+
+    // TODO: Get Auth status from ElixirAuthService ... 
+    // or new User Hook https://codious.io/user-management-with-react-hooks/
+    const eas = new ElixirAuthService();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -47,25 +51,48 @@ export default function MenuAppBar() {
         setAnchorEl(event.currentTarget);
     }
 
-    function handleClose() {
+    function handleMenuClose() {
         setAnchorEl(null);
     }
 
-    function getLoginState() {
-        window.addEventListener('message', (event) => {
-            if (eas.loggedIn()) {
-                setAuth(true);
-            }
-        });
+
+    // TODO: Need to get auth status after first login!
+    // !! This isn't working properly, sometimes takes two Elixir button clicks to change status
+    function getAuthState() {
+        return new Promise(resolve => {
+            // Listen for event and set "auth" based on returned data
+            window.addEventListener('message', (event) => {
+                if (eas.loggedIn()) {
+                    setAuth(true);
+                }
+                else {
+                    setAuth(false)
+                }
+            })
+        })
     }
+
+    // TEST!!!
+    // const getAuthState_NEW = async (event) => {
+    //     const authenticated = await eas.loggedIn();
+    //     if (authenticated) {
+    //         console.log("** Yeah - we're authenticated!");
+    //     }
+    //     else {
+    //         console.log("** Nope, not authenticated");
+    //     }
+    // }
+
+
 
     function handleLogout() {
         // Clear token
         eas.logout();
 
+        handleMenuClose();
+
         // Reset "auth" so Login is displayed
         setAuth(false);
-        console.log("** Logout Auth state: ", auth);
     }
 
     return (
@@ -108,16 +135,16 @@ export default function MenuAppBar() {
                                     horizontal: 'right',
                                 }}
                                 open={open}
-                                onClose={handleClose}
+                                onClose={handleMenuClose}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
                                 {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
                                 <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem>
                             </Menu>
                         </div>
                     )}
                     {!auth && (
-                        <Button onClick={getLoginState} component={Link} to="/login" color="inherit">
+                        <Button onClick={getAuthState} component={Link} to="/login" color="inherit">
                             Login
                         </Button>
                     )}
