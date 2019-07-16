@@ -42,43 +42,39 @@ class Login extends Component {
     }
 
 
-    handleLogin = () => {
+    handleLogin = (event) => {
         // Example: https://gitlab.ebi.ac.uk/tools-glue/ng-ebi-authorization/blob/master/src/auth/auth.service.ts
         console.log("** Elixir Button clicked!")
         this.ElixirAuthService.login();
+
+        console.log("** Elixir Window sent event data.");
+        console.log("** Event: ", event)
+        console.log("** Token: ", event.data);
+
+        if (!this.messageIsAcceptable(event)) {
+            return;
+        }
+
+        // Store JWT in local storage
+        const token = event.data;
+        this.ElixirAuthService.setToken(token);
+
+        // TEST
+        this.setState({ isAuthenticated: true })
+        console.log("** isAuthenticated State: ", this.state.isAuthenticated);
+
+        // Close window after token is received
+        if (event.source) {
+            (window.event.source).close();
+        }
+
+        var decoded = jwt_decode(token);
+        console.log("** Decoded Token: ", decoded);
     }
 
     componentDidMount() {
-        window.addEventListener('message', (event) => {
-            event.preventDefault();
-
-            console.log("** Elixir Window sent event data.");
-            console.log("** Event: ", event)
-            console.log("** Token: ", event.data);
-
-            if (!this.messageIsAcceptable(event)) {
-                return;
-            }
-
-            // Store JWT in local storage
-            const token = event.data;
-            this.ElixirAuthService.setToken(token);
-
-            // TEST
-            this.setState({ isAuthenticated: true })
-            console.log("** isAuthenticated State: ", this.state.isAuthenticated);
-
-            // Close window after token is received
-            if (event.source) {
-                (window.event.source).close();
-            }
-
-            var decoded = jwt_decode(token);
-            console.log("** Decoded Token: ", decoded);
-
-            // Update user profile
-            // this.updateUser();
-        });
+        window.addEventListener("message", this.handleLogin);
+        console.log("** Add \"handleLogin\" Event listener")
     }
 
     componentWillUnmount() {
