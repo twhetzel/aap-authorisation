@@ -6,13 +6,20 @@ import * as serviceWorker from './serviceWorker';
 
 import { BrowserRouter } from 'react-router-dom';
 
+import { UserProvider } from './user-context';
+import { AuthProvider } from './auth-context';
+
 
 ReactDOM.render(
-    <BrowserRouter>
-        {/* <Security {...oktaConfig}> */}
-        <App />
-        {/* </Security> */}
-    </BrowserRouter>,
+    <AuthProvider>
+        <UserProvider>
+            <BrowserRouter>
+                {/* <Security {...oktaConfig}> */}
+                < App />
+                {/* </Security> */}
+            </BrowserRouter>
+        </UserProvider>
+    </AuthProvider>,
     document.getElementById('root'),
 );
 

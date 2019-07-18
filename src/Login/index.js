@@ -4,14 +4,13 @@ import Grid from '@material-ui/core/Grid';
 import ElixirAuthService from '../ElixirAuthService';
 import jwt_decode from 'jwt-decode';
 
+import { AuthConsumer } from '../auth-context';
+
 const AAP_URL = process.env.REACT_APP_AAPURL;
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isAuthenticated: null
-        }
 
         this.ElixirAuthService = new ElixirAuthService();
 
@@ -30,16 +29,16 @@ class Login extends Component {
             console.log("** Token is still valid")
             // TODO Display logged in page if token is still valid
         }
-
-
         this.handleLogin = this.handleLogin.bind(this);
-
     }
 
-    componentWillMount() {
-        if (this.ElixirAuthService.loggedIn())
-            this.props.history.replace('/');
-    }
+    // componentDidMount() {
+    //     if (this.ElixirAuthService.loggedIn()) {
+    //         console.log("** Token still valid... should re-drerect to home page!")
+    //         // this.props.history.replace('/');
+    //         // this.props.history.push("/");
+    //     }
+    // }
 
 
     handleLogin = (event) => {
@@ -57,6 +56,7 @@ class Login extends Component {
 
         // Store JWT in local storage
         const token = event.data;
+        this.props.onAuthenticate(token);
         this.ElixirAuthService.setToken(token);
 
         // TEST
@@ -116,4 +116,17 @@ class Login extends Component {
         )
     }
 }
-export default Login
+// export default Login
+
+
+export default () => (
+    <AuthConsumer>
+        {(context) => (
+            <Login
+                isAuthenticated={context.isAuthenticated}
+                onAuthenticate={context.onAuthenticate}
+            />
+        )}
+    </AuthConsumer>
+)
+

@@ -17,6 +17,8 @@ import { Link } from 'react-router-dom';
 
 import ElixirAuthService from '../ElixirAuthService';
 
+import { AuthConsumer } from '../auth-context';
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -32,9 +34,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function MenuAppBar() {
     const classes = useStyles();
-    // const [auth, setAuth] = React.useState(true);
-    const [auth, setAuth] = React.useState(false);
-    console.log("** Login Toggle State: ", auth);
+
+    // const [auth, setAuth] = React.useState(false);
+    // console.log("** Login Toggle State: ", auth);
 
     // TODO: Get Auth status from ElixirAuthService ... 
     // or new User Hook https://codious.io/user-management-with-react-hooks/
@@ -43,9 +45,9 @@ export default function MenuAppBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    function handleChange(event) {
-        setAuth(event.target.checked);
-    }
+    // function handleChange(event) {
+    //     setAuth(event.target.checked);
+    // }
 
     function handleMenu(event) {
         setAnchorEl(event.currentTarget);
@@ -59,17 +61,18 @@ export default function MenuAppBar() {
     // TODO: Need to get auth status after first login!
     // !! This isn't working properly, sometimes takes two Elixir button clicks to change status
     function getAuthState() {
-        return new Promise(resolve => {
-            // Listen for event and set "auth" based on returned data
-            window.addEventListener('message', (event) => {
-                if (eas.loggedIn()) {
-                    setAuth(true);
-                }
-                else {
-                    setAuth(false)
-                }
-            })
-        })
+
+        // return new Promise(resolve => {
+        //     // Listen for event and set "auth" based on returned data
+        //     window.addEventListener('message', (event) => {
+        //         if (eas.loggedIn()) {
+        //             setAuth(true);
+        //         }
+        //         else {
+        //             setAuth(false)
+        //         }
+        //     })
+        // })
     }
 
     // TEST!!!
@@ -92,16 +95,16 @@ export default function MenuAppBar() {
         handleMenuClose();
 
         // Reset "auth" so Login is displayed
-        setAuth(false);
+        // setAuth(false);
     }
 
     return (
         <div className={classes.root}>
             <FormGroup>
-                <FormControlLabel
+                {/* <FormControlLabel
                     control={<Switch checked={auth} onChange={handleChange} aria-label="LoginSwitch" />}
                     label={auth ? 'Logout' : 'Login'}
-                />
+                /> */}
             </FormGroup>
             <AppBar position="static">
                 <Toolbar>
@@ -111,43 +114,57 @@ export default function MenuAppBar() {
                     <Typography variant="h6" className={classes.title}>
                         AAP Demo
                     </Typography>
-                    {auth && (
-                        <div>
-                            <IconButton
-                                aria-label="Account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={open}
-                                onClose={handleMenuClose}
-                            >
-                                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                                {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
-                                <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem>
-                            </Menu>
-                        </div>
-                    )}
-                    {!auth && (
-                        <Button onClick={getAuthState} component={Link} to="/login" color="inherit">
-                            Login
+
+                    {/* <AuthConsumer>
+                        {({ isAuthenticated }) => <h4> Login State: {isAuthenticated.toString()}</h4>}
+                    </AuthConsumer> */}
+
+                    <AuthConsumer>
+                        {value => value.isAuthenticated && (<div>
+                            {/* Authentication is TRUE */}
+                            <div>
+                                <IconButton
+                                    aria-label="Account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={handleMenu}
+                                    color="inherit"
+                                >
+                                    <AccountCircle />
+                                    {/* {<h4>{`Hello, ${user.name}`}</h4>} */}
+                                </IconButton>
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={open}
+                                    onClose={handleMenuClose}
+                                >
+                                    <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                                    {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
+                                    <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem>
+                                </Menu>
+                            </div>
+                        </div>)}
+                    </AuthConsumer>
+
+                    <AuthConsumer>
+                        {value => !value.isAuthenticated && (<div>
+                            {/* Authentication is FALSE */}
+                            <Button component={Link} to="/login" color="inherit">
+                                Login
                         </Button>
-                    )}
+                        </div>)}
+                    </AuthConsumer>
+
                 </Toolbar>
             </AppBar>
         </div>
