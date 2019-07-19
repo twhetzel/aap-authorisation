@@ -5,15 +5,13 @@ import MenuAppBar from './MenuAppBar';
 import Home from './Home';
 import { Route } from "react-router-dom";
 
-
-// import { createBrowserHistory } from 'history';
+import { withRouter } from "react-router";
 
 import {
   CssBaseline,
   withStyles,
 } from '@material-ui/core';
 
-// const history = createBrowserHistory();
 
 const styles = theme => ({
   main: {
@@ -35,5 +33,5 @@ const App = ({ classes }) => (
   </Fragment>
 );
 
-export default withStyles(styles)(App);
+export default withRouter(withStyles(styles)(App));
 

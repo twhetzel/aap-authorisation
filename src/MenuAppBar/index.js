@@ -14,6 +14,8 @@ import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 
 import { Link, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
+import history from "../history";
 
 import ElixirAuthService from '../ElixirAuthService';
 
@@ -39,7 +41,8 @@ const useStyles = makeStyles(theme => ({
 // });
 
 
-export default function MenuAppBar() {
+// export default function MenuAppBar() {
+function MenuAppBar() {
     const classes = useStyles();
 
     // const [auth, setAuth] = React.useState(false);
@@ -102,16 +105,14 @@ export default function MenuAppBar() {
         eas.logout();
 
         // Use Context to reset context
-        // onLogout()
+        this.props.onLogout();
 
         // TODO: use Router to handle this
-        // Redirect to Home page
-        window.location.href = "/"
+        // Redirect to Home page -- This Works!
+        // window.location.href = "/"
 
-        // Refresh Home page on Logout
-        // router.push({ pathname: '/empty' });
-        // router.replace({ pathname: '/route-to-refresh' });
-        // this.props.history.push("/");
+        // Refresh Home page on Logout --> TEST
+        history.push("/");
 
 
         // Reset "auth" so Login is displayed
@@ -169,10 +170,14 @@ export default function MenuAppBar() {
                                     onClose={handleMenuClose}
                                 >
                                     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                                    {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
-                                    {/* Works, page is refreshed but needs updates to more React-like */}
-                                    <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem>
 
+                                    {/* Works, page is refreshed but needs updates to more React-like */}
+                                    {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
+                                    {/* <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem> */}
+
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+
+                                    {/* {({ onLogout }) => <MenuItem onClick={handleLogout} onLogout={onLogout}>Logout TEST </MenuItem>} */}
                                     {/* <MenuItem component={Redirect} to={{ pathname: "/", state: { from: "/login" } }}>Logout</MenuItem> */}
                                 </Menu>
                             </div>
@@ -194,3 +199,15 @@ export default function MenuAppBar() {
     );
 }
 
+
+// export default MenuAppBar
+
+export default () => (
+    <AuthConsumer>
+        {(context) => (
+            <MenuAppBar
+                onLogout={context.onLogout}
+            />
+        )}
+    </AuthConsumer>
+)

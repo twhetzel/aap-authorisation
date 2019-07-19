@@ -4,20 +4,21 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 
 import { UserProvider } from './user-context';
 import { AuthProvider } from './auth-context';
 
+import history from "./history";
 
 ReactDOM.render(
     <AuthProvider>
         <UserProvider>
-            <BrowserRouter>
+            <Router history={history}>
                 {/* <Security {...oktaConfig}> */}
                 < App />
                 {/* </Security> */}
-            </BrowserRouter>
+            </Router>
         </UserProvider>
     </AuthProvider>,
     document.getElementById('root'),
