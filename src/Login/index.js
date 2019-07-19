@@ -16,31 +16,20 @@ class Login extends Component {
 
         this.ElixirAuthService = new ElixirAuthService();
 
-        /**
-         * CHECK IF THIS SHOULD BE IN CONSTRUCTOR
-         */
-        // Check if token exists in local storage, 
-        // otherwise set to ''
-        this.token = this.ElixirAuthService.getToken();
-        console.log("** Current Token: ", this.token);
-
         // Check if token is still valid
         if (this.ElixirAuthService.isTokenExpired(this.token)) {
-            console.log("** Need to refresh token")
+            // TODO: Add method to refresh token
+            // console.log("** Need to refresh token")
         } else {
-            console.log("** Token is still valid")
-            // TODO Display logged in page if token is still valid
+            // console.log("** Token is still valid")
+            // Set Auth Context 
+            this.props.onAuthenticate(this.ElixirAuthService.getToken());
+
+            // Redirect to Home page if token is still valid
+            history.push("/");
         }
         this.handleLogin = this.handleLogin.bind(this);
     }
-
-    // componentDidMount() {
-    //     if (this.ElixirAuthService.loggedIn()) {
-    //         console.log("** Token still valid... should re-drerect to home page!")
-    //         // this.props.history.replace('/');
-    //         // this.props.history.push("/");
-    //     }
-    // }
 
 
     handleLogin = (event) => {
@@ -58,23 +47,18 @@ class Login extends Component {
 
         // Store JWT in local storage
         const token = event.data;
-
-        // NEW use of Context with auth-context.js
-        this.props.onAuthenticate(token);
-
         this.ElixirAuthService.setToken(token);
 
-        // TEST
-        // this.setState({ isAuthenticated: true })
-        // console.log("** isAuthenticated State: ", this.state.isAuthenticated);
+        // Set Auth Context 
+        this.props.onAuthenticate(token);
 
-        // Close window after token is received
+        // Close pop-up login window after token is received
         if (event.source) {
             (window.event.source).close();
         }
 
-        var decoded = jwt_decode(token);
-        console.log("** Decoded Token: ", decoded);
+        // var decoded = jwt_decode(token);
+        // console.log("** Decoded Token: ", decoded);
 
         // Redirect to Home page on successful authentication
         history.push("/");
@@ -82,12 +66,12 @@ class Login extends Component {
 
     componentDidMount() {
         window.addEventListener("message", this.handleLogin);
-        console.log("** Add \"handleLogin\" Event listener")
+        // console.log("** Add \"handleLogin\" Event listener")
     }
 
     componentWillUnmount() {
         window.removeEventListener('message', this.handleLogin);
-        console.log("** Removed \"handleLogin\" Event listener")
+        // console.log("** Removed \"handleLogin\" Event listener")
     }
 
     /**
