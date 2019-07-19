@@ -22,11 +22,7 @@ export default class ElixirAuthService {
 
     }
 
-    // handleLogin = () => {
     login = () => {
-        // Example: https://gitlab.ebi.ac.uk/tools-glue/ng-ebi-authorization/blob/master/src/auth/auth.service.ts
-        // console.log("** Elixir Button clicked!")
-
         var width = 650;
         var height = 1000;
         var left = -1;
