@@ -128,12 +128,12 @@ export default class ElixirAuthService {
         try {
             const decoded = jwt_decode(token);
             if (decoded.exp < Date.now() / 1000) { // Checking if token is expired.
-                console.log("** Token is EXPIRED!");
+                // console.log("** Token is EXPIRED!");
                 return true;
             }
             else
-                console.log("** Token is NOT EXPIRED!");
-            return false;
+                // console.log("** Token is NOT EXPIRED!");
+                return false;
         }
         catch (err) {
             return false;

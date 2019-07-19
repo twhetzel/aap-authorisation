@@ -40,6 +40,13 @@ export default function MenuAppBar() {
     // or new User Hook https://codious.io/user-management-with-react-hooks/
     const eas = new ElixirAuthService();
 
+  
+    let userName = ''
+    if (eas.loggedIn()) {
+        userName = jwt_decode(eas.getToken()).name;
+        // console.log("Username: ", userName);
+    }
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
