@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import elixir_login_button from '../elixir_login_button.png';
 import Grid from '@material-ui/core/Grid';
 import ElixirAuthService from '../ElixirAuthService';
-import jwt_decode from 'jwt-decode';
+// import jwt_decode from 'jwt-decode';
 
 import { AuthConsumer } from '../auth-context';
 
@@ -16,17 +16,17 @@ class Login extends Component {
 
         this.ElixirAuthService = new ElixirAuthService();
 
-        // Check if token is still valid
+        // Check if token is still valid --> Check if working properly!
         if (this.ElixirAuthService.isTokenExpired(this.token)) {
             // TODO: Add method to refresh token
             // console.log("** Need to refresh token")
         } else {
             // console.log("** Token is still valid")
             // Set Auth Context 
-            this.props.onAuthenticate(this.ElixirAuthService.getToken());
+            // this.props.onAuthenticate(this.ElixirAuthService.getToken());
 
             // Redirect to Home page if token is still valid
-            history.push("/");
+            // history.push("/");
         }
         this.handleLogin = this.handleLogin.bind(this);
     }
