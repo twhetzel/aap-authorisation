@@ -50,7 +50,7 @@ function MenuAppBar() {
     let userName = ''
     if (eas.loggedIn()) {
         userName = jwt_decode(eas.getToken()).name;
-        console.log("Username: ", userName);
+        // console.log("Username: ", userName);
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
