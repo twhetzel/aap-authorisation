@@ -6,6 +6,8 @@ import jwt_decode from 'jwt-decode';
 
 import { AuthConsumer } from '../auth-context';
 
+import history from "../history";
+
 const AAP_URL = process.env.REACT_APP_AAPURL;
 
 class Login extends Component {
@@ -74,9 +76,8 @@ class Login extends Component {
         var decoded = jwt_decode(token);
         console.log("** Decoded Token: ", decoded);
 
-        // TODO: use Router to handle this
-        // Redirect to Home page
-        window.location.href = "/"
+        // Redirect to Home page on successful authentication
+        history.push("/");
     }
 
     componentDidMount() {
@@ -132,6 +133,7 @@ export default () => (
             <Login
                 isAuthenticated={context.isAuthenticated}
                 onAuthenticate={context.onAuthenticate}
+                onLogout={context.onLogout}
             />
         )}
     </AuthConsumer>
