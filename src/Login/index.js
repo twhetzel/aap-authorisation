@@ -56,12 +56,15 @@ class Login extends Component {
 
         // Store JWT in local storage
         const token = event.data;
+
+        // NEW use of Context with auth-context.js
         this.props.onAuthenticate(token);
+
         this.ElixirAuthService.setToken(token);
 
         // TEST
-        this.setState({ isAuthenticated: true })
-        console.log("** isAuthenticated State: ", this.state.isAuthenticated);
+        // this.setState({ isAuthenticated: true })
+        // console.log("** isAuthenticated State: ", this.state.isAuthenticated);
 
         // Close window after token is received
         if (event.source) {
@@ -70,6 +73,10 @@ class Login extends Component {
 
         var decoded = jwt_decode(token);
         console.log("** Decoded Token: ", decoded);
+
+        // TODO: use Router to handle this
+        // Redirect to Home page
+        window.location.href = "/"
     }
 
     componentDidMount() {

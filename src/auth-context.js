@@ -37,6 +37,13 @@ export class AuthProvider extends React.Component {
         })
     }
 
+    // onLogout = () => {
+    //     this.setState({
+    //         isAuthenticated: false,
+    //         JWTToken: null
+    //     })
+    // }
+
     getProvidedState() {
         return {
             isAuthenticated: this.state.isAuthenticated,

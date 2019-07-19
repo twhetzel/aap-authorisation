@@ -13,7 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import ElixirAuthService from '../ElixirAuthService';
 
@@ -31,6 +31,13 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
 }));
+
+
+// const loggedOutStatus = () => ({
+//     isAuthenticated: false,
+//     JWTToken: null
+// });
+
 
 export default function MenuAppBar() {
     const classes = useStyles();
@@ -89,10 +96,23 @@ export default function MenuAppBar() {
 
 
     function handleLogout() {
+        handleMenuClose();
+
         // Clear token
         eas.logout();
 
-        handleMenuClose();
+        // Use Context to reset context
+        // onLogout()
+
+        // TODO: use Router to handle this
+        // Redirect to Home page
+        window.location.href = "/"
+
+        // Refresh Home page on Logout
+        // router.push({ pathname: '/empty' });
+        // router.replace({ pathname: '/route-to-refresh' });
+        // this.props.history.push("/");
+
 
         // Reset "auth" so Login is displayed
         // setAuth(false);
@@ -150,7 +170,10 @@ export default function MenuAppBar() {
                                 >
                                     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
                                     {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
+                                    {/* Works, page is refreshed but needs updates to more React-like */}
                                     <MenuItem onClick={handleLogout} component={Link} to="/">Logout</MenuItem>
+
+                                    {/* <MenuItem component={Redirect} to={{ pathname: "/", state: { from: "/login" } }}>Logout</MenuItem> */}
                                 </Menu>
                             </div>
                         </div>)}
