@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,7 +19,7 @@ import history from "../history";
 
 import ElixirAuthService from '../ElixirAuthService';
 
-import { AuthConsumer } from '../auth-context';
+import { AuthConsumer, AuthContext } from '../auth-context';
 
 
 const useStyles = makeStyles(theme => ({
@@ -44,6 +44,8 @@ const useStyles = makeStyles(theme => ({
 // export default function MenuAppBar() {
 function MenuAppBar() {
     const classes = useStyles();
+
+    const user = useContext(AuthContext)
 
     // const [auth, setAuth] = React.useState(false);
     // console.log("** Login Toggle State: ", auth);
@@ -105,7 +107,9 @@ function MenuAppBar() {
         eas.logout();
 
         // Use Context to reset context
-        this.props.onLogout();
+        // this.props.onLogout();
+        user.onLogout();
+
 
         // TODO: use Router to handle this
         // Redirect to Home page -- This Works!
@@ -207,6 +211,7 @@ export default () => (
         {(context) => (
             <MenuAppBar
                 onLogout={context.onLogout}
+                isAuthenticated={context.isAuthenticated}
             />
         )}
     </AuthConsumer>
