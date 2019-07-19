@@ -4,15 +4,23 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 
+import { UserProvider } from './user-context';
+import { AuthProvider } from './auth-context';
+
+import history from "./history";
 
 ReactDOM.render(
-    <BrowserRouter>
-        {/* <Security {...oktaConfig}> */}
-        <App />
-        {/* </Security> */}
-    </BrowserRouter>,
+    <AuthProvider>
+        <UserProvider>
+            <Router history={history}>
+                {/* <Security {...oktaConfig}> */}
+                < App />
+                {/* </Security> */}
+            </Router>
+        </UserProvider>
+    </AuthProvider>,
     document.getElementById('root'),
 );
 

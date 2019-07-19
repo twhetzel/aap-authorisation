@@ -2,43 +2,33 @@ import React, { Component } from 'react';
 import elixir_login_button from '../elixir_login_button.png';
 import Grid from '@material-ui/core/Grid';
 import ElixirAuthService from '../ElixirAuthService';
-import jwt_decode from 'jwt-decode';
+// import jwt_decode from 'jwt-decode';
+
+import { AuthConsumer } from '../auth-context';
+
+import history from "../history";
 
 const AAP_URL = process.env.REACT_APP_AAPURL;
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isAuthenticated: null
-        }
 
         this.ElixirAuthService = new ElixirAuthService();
 
-        /**
-         * CHECK IF THIS SHOULD BE IN CONSTRUCTOR
-         */
-        // Check if token exists in local storage, 
-        // otherwise set to ''
-        this.token = this.ElixirAuthService.getToken();
-        console.log("** Current Token: ", this.token);
-
-        // Check if token is still valid
+        // Check if token is still valid --> Check if working properly!
         if (this.ElixirAuthService.isTokenExpired(this.token)) {
-            console.log("** Need to refresh token")
+            // TODO: Add method to refresh token
+            // console.log("** Need to refresh token")
         } else {
-            console.log("** Token is still valid")
-            // TODO Display logged in page if token is still valid
+            // console.log("** Token is still valid")
+            // Set Auth Context 
+            // this.props.onAuthenticate(this.ElixirAuthService.getToken());
+
+            // Redirect to Home page if token is still valid
+            // history.push("/");
         }
-
-
         this.handleLogin = this.handleLogin.bind(this);
-
-    }
-
-    componentWillMount() {
-        if (this.ElixirAuthService.loggedIn())
-            this.props.history.replace('/');
     }
 
 
@@ -59,27 +49,29 @@ class Login extends Component {
         const token = event.data;
         this.ElixirAuthService.setToken(token);
 
-        // TEST
-        this.setState({ isAuthenticated: true })
-        console.log("** isAuthenticated State: ", this.state.isAuthenticated);
+        // Set Auth Context 
+        this.props.onAuthenticate(token);
 
-        // Close window after token is received
+        // Close pop-up login window after token is received
         if (event.source) {
             (window.event.source).close();
         }
 
-        var decoded = jwt_decode(token);
-        console.log("** Decoded Token: ", decoded);
+        // var decoded = jwt_decode(token);
+        // console.log("** Decoded Token: ", decoded);
+
+        // Redirect to Home page on successful authentication
+        history.push("/");
     }
 
     componentDidMount() {
         window.addEventListener("message", this.handleLogin);
-        console.log("** Add \"handleLogin\" Event listener")
+        // console.log("** Add \"handleLogin\" Event listener")
     }
 
     componentWillUnmount() {
         window.removeEventListener('message', this.handleLogin);
-        console.log("** Removed \"handleLogin\" Event listener")
+        // console.log("** Removed \"handleLogin\" Event listener")
     }
 
     /**
@@ -116,4 +108,18 @@ class Login extends Component {
         )
     }
 }
-export default Login
+// export default Login
+
+
+export default () => (
+    <AuthConsumer>
+        {(context) => (
+            <Login
+                isAuthenticated={context.isAuthenticated}
+                onAuthenticate={context.onAuthenticate}
+                onLogout={context.onLogout}
+            />
+        )}
+    </AuthConsumer>
+)
+
