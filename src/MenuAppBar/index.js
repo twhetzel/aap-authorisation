@@ -29,6 +29,12 @@ const useStyles = makeStyles(theme => ({
     menuButton: {
         marginRight: theme.spacing(2),
     },
+    button: {
+        textTransform: 'none',
+    },
+    rightIcon: {
+        marginLeft: theme.spacing(1),
+    },
     title: {
         flexGrow: 1,
     },
@@ -115,16 +121,14 @@ function MenuAppBar() {
                         {value => value.isAuthenticated && (<div>
                             {/* Authentication is TRUE */}
                             <div>
-                                {<span>{userName}</span>}
-                                <IconButton
-                                    aria-label="Account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
+                                <Button
                                     onClick={handleMenu}
                                     color="inherit"
+                                    className={classes.button}
                                 >
-                                    <AccountCircle />
-                                </IconButton>
+                                    {<span>{userName}</span>}
+                                    <AccountCircle className={classes.rightIcon} />
+                                </Button>
                                 <Menu
                                     id="menu-appbar"
                                     anchorEl={anchorEl}
